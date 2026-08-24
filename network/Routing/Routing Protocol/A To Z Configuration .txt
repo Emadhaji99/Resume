@@ -1,0 +1,132 @@
+sw_Core 1 
+
+vtp server 
+
+en 
+conf t
+vtp version 2 
+vtp mode server 
+vtp domain Emad 
+vtp password 123 
+
+Vlan database 
+vlan 10 
+vlan 20 
+vlan 30
+vlan 40 
+vlan 100
+
+
+spanning-tree 
+
+spanning-tree mode rapid-pvst
+spanning-tree vlan 1 , 10 , 20 , 30 , 40 , 100 priority 0 
+
+
+Ether-Channel
+
+interface range gig 1/1/1 -2 
+channel-protocol pagp 
+channel-group 1 mode desi		
+
+################
+
+(IP)
+
+conf t
+ip routing 
+
+interface vlan 
+
+en 
+conf t
+interface vlan 10 
+ip address	192.168.10.1 255.255.255.0 
+ex
+interface vlan 20 
+ip address 192.168.20.1 255.255.255.0
+ex
+interface vlan 30 
+ip address	192.168.30.1 255.255.255.0
+ex
+interface vlan 40 
+ip address	192.168.40.1 255.255.255.0
+ex
+interface vlan 100 
+ip address	192.168.100.1 255.255.255.0
+ex   
+
+DHCP (IP Helper ) 
+
+interface vlan 10 
+no ip helper 192.168.100.1
+ex
+interface vlan 20 
+no ip helper 192.168.100.1
+ex
+interface vlan 30 
+no ip helper 192.168.100.1
+ex
+interface vlan 40 
+no ip helper 192.168.100.1
+ex
+interface vlan 100
+no ip helper 192.168.100.1
+
+===========================================
+Sw_Core 2
+
+spanning-tree mode rapid-pvst
+spanning-tree vlan 1 , 10 , 20 , 30 , 40 , 100 priority 4096
+
+Trunking 
+
+conf t
+interface range gig	1/0/1 -5 
+switchport mode trunk
+ex
+interface range gig 1/1/1 -2 
+switchport mode trunk
+
+Ether-Channel
+
+interface range gig 1/1/1 -2 
+channel-protocol pagp 
+channel-group 1 mode desi
+===========================================
+(All Access Switch) 
+
+
+vtp client
+
+en 
+conf t
+vtp version 2 
+vtp mode client 
+vtp domain Emad 
+vtp password 123
+
+en
+conf t
+interface range gig 0/1 -2 
+switchport mode trunk 
+
+spanning-tree 
+
+ex
+spanning-tree mode rapid-pvst
+
+Vlan Assignment 
+
+interface range fa 0/1 -4 
+switchport mode access 
+switchport access vlan 10 
+
+CDP
+
+ex
+cdp run 
+
+en 
+conf t
+spanning-tree vlan 1 , 10 , 20 , 30 , 40 , 100 priority 61440 
